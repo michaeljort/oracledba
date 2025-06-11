@@ -1,5 +1,7 @@
 databases:
   cdb1:
+    # If using TNS, uncomment the following line
+    #connection_string: "cdb1_tnsname"
     user: sys
     password: oracle
     dsn: cdb_dsn

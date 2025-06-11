@@ -14,7 +14,7 @@ class CDB:
         if connect:
             self.connect_params = self.from_yaml(db_name)
             self.connection = oracledb.connect(params=self.connect_params)
-            self.cursor = self.connection.cursor()
+            self._cursor = self.connection.cursor()
             self.pdbs = self.discover_pdbs()  # Automatically load PDBs
             print(f"Connected to '{db_name}'")
             print(f"Discovered PDBs: {', '.join([pdb.name for pdb in self.pdbs])}")
@@ -52,25 +52,20 @@ class CDB:
 
         return connect_params
 
-    def get_cdb_name(self):
-        """Queries the database to determine the parent CDB name."""
-        self.cursor.execute("SELECT name FROM V$DATABASE")
-        return self.cursor.fetchone()[0]
-
     def discover_pdbs(self):
         """Queries the database to dynamically retrieve all available PDBs."""
-        if not hasattr(self, "cursor"):  # Avoid querying if no connection was established
+        if not hasattr(self, "_cursor"):  # Avoid querying if no connection was established
             return []
-        self.cursor.execute("SELECT NAME FROM V$PDBS")
-        pdb_names = [row[0] for row in self.cursor.fetchall()]
+        self._cursor.execute("SELECT NAME FROM V$PDBS")
+        pdb_names = [row[0] for row in self._cursor.fetchall()]
         return [PDB(name, cdb=self) for name in pdb_names]
 
     def close(self):
         """Closes the connection and all registered PDBs."""
         for pdb in self.pdbs:
             pdb.close()
-        if hasattr(self, "cursor"):
-            self.cursor.close()
+        if hasattr(self, "_cursor"):
+            self._cursor.close()
         if hasattr(self, "connection"):
             self.connection.close()
             print("CDB and all PDB connections closed.")
