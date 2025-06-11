@@ -63,7 +63,7 @@ class CDB:
         """Queries the database to dynamically retrieve all available PDBs."""
         if not hasattr(self, "_cursor"):  # Avoid querying if no connection was established
             return []
-        self._cursor.execute("SELECT NAME FROM V$PDBS")
+        self._cursor.execute("SELECT NAME FROM V$CONTAINERS ORDER BY CON_ID")
         pdb_names = [row[0] for row in self._cursor.fetchall()]
         return [PDB(name, cdb=self) for name in pdb_names]
 
