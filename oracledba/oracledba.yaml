@@ -1,0 +1,31 @@
+databases:
+  cdb1:
+    user: sys
+    password: oracle
+    dsn: cdb_dsn
+    wallet_location: /path/to/wallet
+    mode: sysdba
+    homogeneous: true
+    events: false
+    stmtcachesize: 20
+    edition: my_edition
+    tag: connection_tag
+    matchanytag: false
+    shardingkey: []
+    supershardingkey: []
+    configdir: /path/to/config
+  pdb1:
+    user: pdb_user
+    password: pdb_password
+    dsn: pdb_dsn
+    wallet_location: /path/to/pdb_wallet
+    mode: normal
+    homogeneous: true
+    events: false
+    stmtcachesize: 50
+    edition: default_edition
+    tag: pdb_connection
+    matchanytag: true
+    shardingkey: [key1, key2]
+    supershardingkey: []
+    configdir: /path/to/pdb/config
