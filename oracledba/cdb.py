@@ -1,7 +1,7 @@
 import os
 import yaml
 import oracledb
-import inspect
+import subprocess
 from .pdb import PDB
 
 class CDB:
@@ -49,6 +49,13 @@ class CDB:
 
         if "connection_string" in db_params and db_params["connection_string"]:
             connect_params.parse_connect_string(db_params["connection_string"])
+
+        # Check current value of ORACLE_SID
+        if os.getenv('ORACLE_SID') != connect_params.sid:
+            # Set ORACLE_SID to connect_params.sid and configure environment for local, bequeath connections
+            os.environ['ORACLE_SID'] = connect_params.sid
+            os.environ['ORAENV_ASK'] = 'NO'
+            subprocess.run(". oraenv -s <<< $ORACLE_SID", shell=True, executable="/bin/bash")
 
         return connect_params
 
