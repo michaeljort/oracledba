@@ -46,9 +46,9 @@ class PDB:
     def set_container(self):
         """Switch session to the PDB when connected through a CDB."""
         if self.inherited_connection and self._current_container != self.name:
+            print(f"Switching to PDB: {self.name}")
             self._cursor.execute(f"ALTER SESSION SET CONTAINER = {self.name}")
             self._current_container = self.name
-            print(f"Switched to PDB: {self.name}")
 
     def open_mode(self):
         """Retrieves the latest open mode of the PDB."""
